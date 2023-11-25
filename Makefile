@@ -3,40 +3,47 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: esamad-j <esamad-j@student.42.fr>          +#+  +:+       +#+         #
+#    By: aoteo-be <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
-#    Created: 2023/11/14 00:00:24 by esamad-j          #+#    #+#              #
-#    Updated: 2023/11/20 22:34:22 by esamad-j         ###   ########.fr        #
+#    Created: 2021/12/15 08:41:10 by aoteo-be          #+#    #+#              #
+#    Updated: 2023/08/02 16:20:34 by aoteo-be         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
+# Compiler and compilation flags
+CC          = gcc
+CFLAGS	    = -g -Wall -Wextra -Werror
+
+# Directories
+INC_DIR		= ./includes
+
+# Executable
 NAME		= cub3D
 
-CFLAGS		= -Wall -Werror -Wextra
+# Sources
+SRCS = check_wall.c cub3D.c map_errors.c map_read.c ray.c
 
-CC			= gcc
-
+# Libft
 LIBFT		= ./libft/libft.a
-
-SRCS		= cub3D.c map_errors.c map_read.c check_wall.c
-
-OBJS		= $(SRCS:%.c=%.o)
-
 LDLFLAG 	= -L libft/ -lft
 
-all: $(NAME)
+#Object files
+OBJS        = $(SRCS:.c=.o)
 
-$(NAME):	$(OBJS)
+all :       $(NAME)
+
+$(NAME):    $(OBJS)
 			make -C libft
-			$(CC) $(CFLAGS) $(LDLFLAG) $(OBJS) -o $(NAME)
+			$(CC) $(CFLAGS) $(LDLFLAG) $(OBJS) -IINC_DIR -lmlx -framework OpenGL -framework AppKit -o $(NAME)
 
-clean:
-			make -C libft clean
-			rm -f $(OBJS)
+clean :
+		    @rm -fv $(OBJS)
+			@rm -fv $(OBJS_BONUS)
 
-fclean: 	clean
-			rm -f $(NAME)
+fclean :    clean
+		    @rm -fv $(NAME)
+			@rm -fv $(BNAME)
 
-re: 		fclean all
+re :        fclean all
 
-.PHONY: all clean fclean re bonus
+.PHONY :    all bonus clean fclean make re

@@ -76,17 +76,29 @@ t_map	*create_map(void)
 	map->f = NULL;
 	map->c = NULL;
 	map->map = NULL;
-	map->player.pos_x = 0;
-	map->player.pos_y = 0;
+	map->player.x = 0;
+	map->player.y = 0;
 	return (map);
 }
 
 int	main(int argc, char **argv)
 {
 	char	**map_data;
+	t_map	*map;
+	t_mlx	*graphics;
+	t_ray	*ray;
 
 	check_input(argc, argv);
 	map_data = read_map(argv[1]);
-	check_map_data(create_map(), map_data);
+	map = check_map_data(create_map(), map_data);
+	graphics = malloc(sizeof(t_mlx));
+	if (graphics == NULL)
+		map_errors(0, "");
+	graphics->mlx = mlx_init();
+	graphics->win = mlx_new_window(graphics->mlx, WIN_WIDTH, WIN_HEIGHT, TITLE);
+	ray = malloc(sizeof(t_ray));
+	if (ray == NULL)
+		map_errors(0, "");
+	init_ray(ray, locate_player(map));
 	return (0);
 }

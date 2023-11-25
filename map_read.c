@@ -19,8 +19,8 @@ int	check_chars(t_map *all_map, char value, int x, int y)
 		map_errors(3, "");
 	if (value == 'N' || value == 'S' || value == 'E' || value == 'W')
 	{
-		all_map->player.pos_y = y;
-		all_map->player.pos_x = x;
+		all_map->player.y = y;
+		all_map->player.x = x;
 		return (1);
 	}
 	return (0);
@@ -93,7 +93,7 @@ char	**read_map(char *map_name)
 	return (map_txt);
 }
 
-void	check_map_data(t_map *all_map, char **map_data)
+t_map	*check_map_data(t_map *all_map, char **map_data)
 {
 	int	i;
 
@@ -118,4 +118,5 @@ void	check_map_data(t_map *all_map, char **map_data)
 	check_player_pos(all_map);
 	if (check_walls(all_map) == -1)
 		map_errors(4, "");
+	return (all_map);
 }
