@@ -83,7 +83,6 @@ t_map	*create_map(void)
 
 int	main(int argc, char **argv)
 {
-	int		x;
 	char	**map_data;
 	t_map	*map;
 	t_mlx	*graphics;
@@ -101,22 +100,87 @@ int	main(int argc, char **argv)
 	if (ray == NULL)
 		map_errors(0, "");
 	init_ray(ray, locate_player(map));
-	x = -1;
-	while (++x < WIN_WIDTH)
+	while (1)
 	{
-		ray->camerax = 2 * x / (double)WIN_WIDTH - 1;
-		ray->pos.dirx = ray->pos.dirx + ray->plane.x * ray->camerax;
-		ray->pos.diry = ray->pos.diry + ray->plane.y * ray->camerax;
-		ray->map.x = (int)ray->pos.x;
-		ray->map.y = (int)ray->pos.y;
-		if (ray->pos.dirx == 0)
-			ray->deltadist.x = INFINITE;
+		ray->pos.dirx = -1;
+		while (++ray->pos.x < WIN_WIDTH)
+		{
+			ray->camerax = 2 * ray->pos.dirx / (double) WIN_WIDTH - 1;
+			ray->pos.dirx = ray->pos.dirx + ray->plane.x * ray->camerax;
+			ray->pos.diry = ray->pos.diry + ray->plane.y * ray->camerax;
+			ray->map.x = (int) ray->pos.x;
+			ray->map.y = (int) ray->pos.y;
+			if (ray->pos.dirx == 0)
+				ray->deltadist.x = INFINITE;
+			else
+				ray->deltadist.x = fabs(1 / ray->pos.dirx);
+			if (ray->pos.diry == 0)
+				ray->deltadist.y = INFINITE;
+			else
+				ray->deltadist.y = fabs(1 / ray->pos.diry);
+			if (ray->pos.dirx < 0)
+			{
+				ray->pos.step.x = -1;
+				ray->sidedist.x = (ray->pos.x - ray->map.x) * ray->deltadist.x;
+			}
+			else
+			{
+				ray->pos.step.x = 1;
+				ray->sidedist.x = (ray->map.x + 1.0 - ray->pos.x) * ray->deltadist.x;
+			}
+			if (ray->pos.diry < 0)
+			{
+				ray->pos.step.y = -1;
+				ray->sidedist.y = (ray->pos.y - ray->map.y) * ray->deltadist.y;
+			}
+			else
+			{
+				ray->pos.step.y = 1;
+				ray->sidedist.y = (ray->map.y + 1.0 - ray->pos.y) * ray->deltadist.y;
+			}
+		}
+		while (ray->pos.hit == 0)
+		{
+			if (ray->sidedist.x < ray->sidedist.y)
+			{
+				ray->sidedist.x += ray->deltadist.x;
+				ray->map.x += ray->pos.step.x;
+				ray->pos.side = 0;
+			}
+			else
+			{
+				ray->sidedist.y += ray->deltadist.y;
+				ray->map.y += ray->pos.step.y;
+				ray->pos.side = 1;
+			}
+			if (map->map[ray->map.x][ray->map.y] == '1')
+				ray->pos.hit = 1;
+		}
+		if (ray->pos.side == 0)
+			ray->perpwalldist = (ray->sidedist.x - ray->deltadist.x);
 		else
-			ray->deltadist.x = fabs(1 / ray->pos.dirx);
-		if (ray->pos.diry == 0)
-			ray->deltadist.y = INFINITE;
+			ray->perpwalldist = (ray->sidedist.y - ray->deltadist.y);
+		graphics->line_height = (int)(WIN_HEIGHT / ray->perpwalldist);
+		graphics->draw_start = -graphics->line_height / 2 + WIN_HEIGHT / 2;
+		if (graphics->draw_start < 0)
+			graphics->draw_start = 0;
+		graphics->draw_end = graphics->line_height / 2 + WIN_HEIGHT / 2;
+		if (graphics->draw_end >= WIN_HEIGHT)
+			graphics->draw_end = WIN_HEIGHT - 1;
+		if (ray->pos.side == 0)
+		{
+			if (ray->pos.diry == -1)
+				get_image(graphics->mlx, 'N');
+			else
+				get_image(graphics->mlx, 'S');
+		}
 		else
-			ray->deltadist.y = fabs(1 / ray->pos.diry);
+		{
+			if (ray->pos.diry == -1)
+				get_image(graphics->mlx, 'W');
+			else
+				get_image(graphics->mlx, 'E');
+		}
 	}
 	return (0);
 }

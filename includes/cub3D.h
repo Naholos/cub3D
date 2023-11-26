@@ -28,14 +28,18 @@
 # define SCAPE	53
 # define UP		1
 
-# define ERROR	"\33[31mError\n"
+# define ERROR	".\33[31mError\n"
+
+# define EAST	"./textures/ea_1.xpm"
+# define NORTH	"./textures/no_1.xpm"
+# define SOUTH	"./textures/so_1.xpm"
+# define WEST	"./textures/we_1.xpm"
 
 # define INFINITE 1e30
 
 # define FOV	0.66
 
-# define TEXT_WIDTH		64
-# define TEXT_HEIGHT	64
+# define TEXT_DIM		64
 
 # define TITLE		"cub3D"
 # define WIN_HEIGHT	480
@@ -49,6 +53,9 @@ typedef struct s_coord
 
 typedef struct s_mlx
 {
+	int		draw_start;
+	int		draw_end;
+	int		line_height;
 	void	*img;
 	void	*mlx;
 	void	*win;
@@ -68,10 +75,13 @@ typedef struct s_double
 
 typedef struct s_player
 {
+	int		hit;
+	int		side;
 	double	x;
 	double	y;
 	double	dirx;
 	double	diry;
+	t_coord	step;
 }	t_player;
 
 typedef struct s_map
@@ -93,6 +103,7 @@ typedef struct s_ray
 	double		camerax;
 	double		time;
 	double		old_time;
+	double		perpwalldist;
 	t_coord		map;
 	t_double	plane;
 	t_double	sidedist;
@@ -118,6 +129,7 @@ int			check_chars(t_map *all_map, char value, int x, int y);
 char		**read_map(char *map_name);
 
 /* ray.c */
+void		get_image(t_mlx *mlx, char symbol);
 void		init_ray(t_ray *ray, t_player *player);
 t_player	*locate_player(t_map *all_map);
 

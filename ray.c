@@ -12,6 +12,21 @@
 
 #include "./includes/cub3D.h"
 
+void	get_image(t_mlx *mlx, char symbol)
+{
+	int	dim;
+
+	dim = TEXT_DIM;
+	if (symbol == 'N')
+		mlx->img = mlx_xpm_file_to_image(mlx->mlx, NORTH, &dim, &dim);
+	if (symbol == 'S')
+		mlx->img = mlx_xpm_file_to_image(mlx->mlx, SOUTH, &dim, &dim);
+	if (symbol == 'E')
+		mlx->img = mlx_xpm_file_to_image(mlx->mlx, EAST, &dim, &dim);
+	if (symbol == 'W')
+		mlx->img = mlx_xpm_file_to_image(mlx->mlx, WEST, &dim, &dim);
+}
+
 t_coord	get_dir(char dir)
 {
 	t_coord	coord;
@@ -62,6 +77,7 @@ t_player	*locate_player(t_map *m)
 void	init_ray(t_ray *ray, t_player *player)
 {
 	ray->time = 0;
+	ray->pos.hit = 0;
 	ray->old_time = 0;
 	ray->pos.x = player->x;
 	ray->pos.y = player->y;
