@@ -14,6 +14,7 @@
 # define CUB3D_H
 
 # include <fcntl.h>
+# include <math.h>
 //# include <mlx.h>
 # include "../mlx/mlx.h"
 # include <stdio.h>
@@ -21,15 +22,17 @@
 # include <unistd.h>
 # include "../libft/libft.h"
 
-# define ERROR	"\33[31mError\n"
-
-# define FOV	0.66
-
 # define DOWN	13
 # define LEFT	0
 # define RIGHT	2
 # define SCAPE	53
 # define UP		1
+
+# define ERROR	"\33[31mError\n"
+
+# define INFINITE 1e30
+
+# define FOV	0.66
 
 # define TEXT_WIDTH		64
 # define TEXT_HEIGHT	64
@@ -37,6 +40,12 @@
 # define TITLE		"cub3D"
 # define WIN_HEIGHT	480
 # define WIN_WIDTH	640
+
+typedef struct s_coord
+{
+	int	x;
+	int	y;
+}	t_coord;
 
 typedef struct s_mlx
 {
@@ -51,23 +60,19 @@ typedef struct s_max_values
 	int	max_y;
 }	t_max_values;
 
-typedef struct s_plan
+typedef struct s_double
 {
 	double	x;
 	double	y;
-}	t_plan;
+}	t_double;
 
 typedef struct s_player
 {
-	int	x;
-	int	y;
-}	t_player;
-
-typedef struct s_vector
-{
 	double	x;
 	double	y;
-}	t_vector;
+	double	dirx;
+	double	diry;
+}	t_player;
 
 typedef struct s_map
 {
@@ -85,9 +90,14 @@ typedef struct s_map
 
 typedef struct s_ray
 {
-	t_plan		plane;
+	double		camerax;
+	double		time;
+	double		old_time;
+	t_coord		map;
+	t_double	plane;
+	t_double	sidedist;
+	t_double	deltadist;
 	t_player	pos;
-	t_vector	ray_dir;
 }	t_ray;
 
 /* check_walls */

@@ -83,6 +83,7 @@ t_map	*create_map(void)
 
 int	main(int argc, char **argv)
 {
+	int		x;
 	char	**map_data;
 	t_map	*map;
 	t_mlx	*graphics;
@@ -100,5 +101,22 @@ int	main(int argc, char **argv)
 	if (ray == NULL)
 		map_errors(0, "");
 	init_ray(ray, locate_player(map));
+	x = -1;
+	while (++x < WIN_WIDTH)
+	{
+		ray->camerax = 2 * x / (double)WIN_WIDTH - 1;
+		ray->pos.dirx = ray->pos.dirx + ray->plane.x * ray->camerax;
+		ray->pos.diry = ray->pos.diry + ray->plane.y * ray->camerax;
+		ray->map.x = (int)ray->pos.x;
+		ray->map.y = (int)ray->pos.y;
+		if (ray->pos.dirx == 0)
+			ray->deltadist.x = INFINITE;
+		else
+			ray->deltadist.x = fabs(1 / ray->pos.dirx);
+		if (ray->pos.diry == 0)
+			ray->deltadist.y = INFINITE;
+		else
+			ray->deltadist.y = fabs(1 / ray->pos.diry);
+	}
 	return (0);
 }

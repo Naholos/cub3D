@@ -12,37 +12,61 @@
 
 #include "./includes/cub3D.h"
 
-t_player	*locate_player(t_map *all_map)
+t_coord	get_dir(char dir)
 {
-	int			p_found;
+	t_coord	coord;
+
+	coord.x = 0;
+	coord.y = 0;
+	if (dir == 'N')
+		coord.y = -1;
+	if (dir == 'S')
+		coord.y = 1;
+	if (dir == 'W')
+		coord.x = -1;
+	if (dir == 'E')
+		coord.x = 1;
+	return (coord);
+}
+
+t_player	*locate_player(t_map *m)
+{
+	int			x;
+	int			y;
+	t_coord		coord;
 	t_player	*p;
 
-	p_found = 0;
 	p = malloc(sizeof(t_player));
 	if (p == NULL)
 		map_errors(0, "");
-	p->y = -1;
-	while (all_map->map[++p->y])
+	y = -1;
+	while (m->map[++y])
 	{
-		p->x = -1;
-		while (all_map->map[p->y][++p->x])
+		x = -1;
+		while (m->map[y][++x])
 		{
-			if (check_chars(all_map, all_map->map[p->y][p->x], p->x, p->y))
+			if (check_chars(m, m->map[y][x], x, y))
 			{
-				p_found = 1;
-				break ;
+				coord = get_dir(m->map[y][x]);
+				p->dirx = coord.x;
+				p->diry = coord.y;
+				p->x = x;
+				p->y = y;
+				return (p);
 			}
 		}
-		if (p_found)
-			break ;
 	}
-	return (p);
+	exit(EXIT_FAILURE);
 }
 
 void	init_ray(t_ray *ray, t_player *player)
 {
+	ray->time = 0;
+	ray->old_time = 0;
 	ray->pos.x = player->x;
 	ray->pos.y = player->y;
+	ray->pos.dirx = player->dirx;
+	ray->pos.diry = player->diry;
 	ray->plane.x = 0;
 	ray->plane.y = FOV;
 }
