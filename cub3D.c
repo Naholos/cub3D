@@ -12,6 +12,7 @@
 
 #include "includes/cub3D.h"
 
+// Función que verifica si la extensión del archivo es .cub
 static int	check_cub(char *argv)
 {
 	int	n;
@@ -28,6 +29,7 @@ static int	check_cub(char *argv)
 	return (0);
 }
 
+// Función que verifica la entrada y muestra mensajes de error en caso necesario
 static void	check_input(int parameters_number, char **argv)
 {
 	if (parameters_number != 2)
@@ -46,6 +48,7 @@ static void	check_input(int parameters_number, char **argv)
 	}
 }
 
+// Función que verifica si algún parámetro del mapa no está configurado
 void	check_no_parameter(t_map *map)
 {
 	if (map->no == NULL)
@@ -62,6 +65,7 @@ void	check_no_parameter(t_map *map)
 		map_errors(2, "C");
 }
 
+// Función que crea una estructura para almacenar el mapa
 t_map	*create_map(void)
 {
 	t_map	*map;
@@ -81,6 +85,7 @@ t_map	*create_map(void)
 	return (map);
 }
 
+// Función principal
 int	main(int argc, char **argv)
 {
 	char	**map_data;
@@ -88,6 +93,7 @@ int	main(int argc, char **argv)
 	t_mlx	*graphics;
 	t_ray	*ray;
 
+	// Verificar la entrada y obtener datos del mapa
 	check_input(argc, argv);
 	map_data = read_map(argv[1]);
 	map = check_map_data(create_map(), map_data);
@@ -100,16 +106,20 @@ int	main(int argc, char **argv)
 	if (ray == NULL)
 		map_errors(0, "");
 	init_ray(ray, locate_player(map));
+	// Bucle principal del juego
 	while (1)
 	{
-		ray->pos.dirx = -1;
-		while (++ray->pos.x < WIN_WIDTH)
+		// Actualizar la posición del jugador
+		ray->pos.x -= 1;
+		while (++ray->pos.x < 1)
 		{
-			ray->camerax = 2 * ray->pos.dirx / (double) WIN_WIDTH - 1;
+			// Cálculos relacionados con la dirección y posición del rayo
+			ray->camerax = 2 * ray->pos.x / WIN_WIDTH - 1;
 			ray->pos.dirx = ray->pos.dirx + ray->plane.x * ray->camerax;
 			ray->pos.diry = ray->pos.diry + ray->plane.y * ray->camerax;
 			ray->map.x = (int) ray->pos.x;
 			ray->map.y = (int) ray->pos.y;
+			// Bucle para el lanzamiento de rayos y renderizado del juego
 			if (ray->pos.dirx == 0)
 				ray->deltadist.x = INFINITE;
 			else
@@ -120,6 +130,7 @@ int	main(int argc, char **argv)
 				ray->deltadist.y = fabs(1 / ray->pos.diry);
 			if (ray->pos.dirx < 0)
 			{
+				// Más cálculos relacionados con el lanzamiento de rayos
 				ray->pos.step.x = -1;
 				ray->sidedist.x = (ray->pos.x - ray->map.x) * ray->deltadist.x;
 			}
@@ -157,9 +168,9 @@ int	main(int argc, char **argv)
 				ray->pos.hit = 1;
 		}
 		if (ray->pos.side == 0)
-			ray->perpwalldist = (ray->sidedist.x - ray->deltadist.x);
+			ray->perpwalldist = (ray->map.x - ray->pos.x + (1.0 - ray->pos.step.x) / 2.0) / ray->pos.dirx;
 		else
-			ray->perpwalldist = (ray->sidedist.y - ray->deltadist.y);
+			ray->perpwalldist = (ray->map.y - ray->pos.y + (1.0 - ray->pos.step.y) / 2.0) / ray->pos.diry;
 		graphics->line_height = (int)(WIN_HEIGHT / ray->perpwalldist);
 		graphics->draw_start = -graphics->line_height / 2 + WIN_HEIGHT / 2;
 		if (graphics->draw_start < 0)

@@ -12,6 +12,7 @@
 
 #include "./includes/cub3D.h"
 
+// Función para obtener la imagen de las texturas
 void	get_image(t_mlx *mlx, char symbol)
 {
 	int	dim;
@@ -27,6 +28,8 @@ void	get_image(t_mlx *mlx, char symbol)
 		mlx->img = mlx_xpm_file_to_image(mlx->mlx, WEST, &dim, &dim);
 }
 
+// Función para determinar la dirección a la que mira el jugador según el valor
+// de la variable que marca suposición inicial
 t_coord	get_dir(char dir)
 {
 	t_coord	coord;
@@ -44,6 +47,7 @@ t_coord	get_dir(char dir)
 	return (coord);
 }
 
+// Función que recupera la posición inicial de un jugador
 t_player	*locate_player(t_map *m)
 {
 	int			x;
@@ -74,6 +78,7 @@ t_player	*locate_player(t_map *m)
 	exit(EXIT_FAILURE);
 }
 
+// Función que inicializa el rayo
 void	init_ray(t_ray *ray, t_player *player)
 {
 	ray->time = 0;
