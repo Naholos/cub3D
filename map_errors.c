@@ -6,7 +6,7 @@
 /*   By: esamad-j <esamad-j@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/15 12:07:28 by aoteo-be          #+#    #+#             */
-/*   Updated: 2023/11/22 04:20:15 by esamad-j         ###   ########.fr       */
+/*   Updated: 2023/11/30 23:17:28 by esamad-j         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,6 +53,16 @@ void	map_errors(int i, char *parameter)
 		printf("Se encontraron múltiples jugadores.");
 	else if (i == 6)
 		printf("No se encontró posición de jugador.");
+	else if (i == 7)
+		printf("Path to textures does not exist or cannot be accessed");
+	else if (i == 8)
+		printf("Empty value for sky/floor");
+	else if (i == 9)
+		printf("Value must be in R,G,B");
+	else if (i == 10)
+		printf("All value of R,G,B must be a digit");
+	else if (i == 11)
+		printf("R.G.B value must be between (0 to 255)");
 	printf("\n");
 	// Sale del programa con código de error
 	exit(EXIT_FAILURE);

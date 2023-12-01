@@ -6,7 +6,7 @@
 /*   By: esamad-j <esamad-j@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/14 01:34:29 by esamad-j          #+#    #+#             */
-/*   Updated: 2023/11/22 04:20:35 by esamad-j         ###   ########.fr       */
+/*   Updated: 2023/11/30 03:07:10 by esamad-j         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,6 +113,7 @@ t_map	*check_map_data(t_map *all_map, char **map_data)
 	int	i;
 
 	// Asigna el puntero del mapa a la posición después de las 6 primeras líneas de parámetros
+	all_map->all_map = map_data;
 	all_map->map = map_data + 6;
 	i = -1;
 	// Recorre las líneas de parámetros para asignar valores a las variables correspondientes

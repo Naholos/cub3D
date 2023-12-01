@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: aoteo-be <marvin@42.fr>                    +#+  +:+       +#+         #
+#    By: esamad-j <esamad-j@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/12/15 08:41:10 by aoteo-be          #+#    #+#              #
-#    Updated: 2023/08/02 16:20:34 by aoteo-be         ###   ########.fr        #
+#    Updated: 2023/11/30 03:02:31 by esamad-j         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -34,7 +34,7 @@ all :       $(NAME)
 
 $(NAME):    $(OBJS)
 			make -C libft
-			$(CC) $(CFLAGS) $(LDLFLAG) $(OBJS) -IINC_DIR -lmlx -framework OpenGL -framework AppKit -o $(NAME)
+			$(CC) $(CFLAGS) $(LDLFLAG) $(OBJS) -IINC_DIR -lmlx -L mlx/ -framework OpenGL -framework AppKit -o $(NAME)
 
 clean :
 		    @rm -fv $(OBJS)

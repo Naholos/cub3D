@@ -6,7 +6,7 @@
 /*   By: esamad-j <esamad-j@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/14 00:04:56 by esamad-j          #+#    #+#             */
-/*   Updated: 2023/11/20 22:47:51 by esamad-j         ###   ########.fr       */
+/*   Updated: 2023/12/01 03:07:11 by esamad-j         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@
 # define SCAPE	53
 # define UP		1
 
-# define ERROR	".\33[31mError\n"
+# define ERROR	"\33[31mError\n"
 
 # define EAST	"./textures/ea_1.xpm"
 # define NORTH	"./textures/no_1.xpm"
@@ -53,10 +53,16 @@ typedef struct s_coord
 
 typedef struct s_mlx
 {
+	void	*img;				//necesario para imprimir pixeles en imagen -> https://harm-smits.github.io/42docs/libs/minilibx/getting_started.html
+	char	*addr;
+	int		bits_per_pixel;
+	int		line_length;
+	int		endian;
+
+	
 	int		draw_start;
 	int		draw_end;
 	int		line_height;
-	void	*img;
 	void	*mlx;
 	void	*win;
 }	t_mlx;
@@ -77,8 +83,8 @@ typedef struct s_player
 {
 	int		hit;
 	int		side;
-	double	x;
-	double	y;
+	double	x; //pos inicial de jugador 
+	double	y; //pos inicial de jugador 
 	double	dirx;
 	double	diry;
 	t_coord	step;
@@ -86,16 +92,17 @@ typedef struct s_player
 
 typedef struct s_map
 {
-	char		*no;
+	char		*no; //guardar las direcciones de las texturas
 	char		*so;
 	char		*ea;
 	char		*we;
-	char		*f;
+	char		*f; //guardar los valores de colores
 	char		*c;
-	char		**map;
-	size_t		max_x;
-	size_t		max_y;
-	t_player	player;
+	char		**map; //guardar solo mapa
+	char		**all_map; //guardar mapa con datos
+	size_t		max_x; //maximo de largo
+	size_t		max_y; //maximo de alto
+	t_player	player; // posicion del jugador
 }	t_map;
 
 typedef struct s_ray
@@ -110,6 +117,38 @@ typedef struct s_ray
 	t_double	deltadist;
 	t_player	pos;
 }	t_ray;
+
+typedef struct s_textures
+{
+	void		*img;
+	int		height;
+	int		width;
+	char		*address;
+
+}				t_textures;
+
+typedef struct s_color
+{
+	int transparency;
+	int	red;
+	int	green;
+	int	blue;
+	
+}	t_color;
+
+typedef struct s_cub
+{
+	t_map			*map;
+	t_textures		n_img;
+	t_textures		s_img;
+	t_textures		e_img;
+	t_textures		w_img;
+	t_color			sky_color;
+	t_color			floor_color;
+	t_mlx			*graphics;
+	t_ray			*ray;
+	
+}				t_cub;
 
 /* check_walls */
 int			check_walls(t_map *map);
