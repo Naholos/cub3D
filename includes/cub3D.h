@@ -15,13 +15,14 @@
 
 # include <fcntl.h>
 # include <math.h>
-//# include <mlx.h>
-# include "../mlx/mlx.h"
+# include <mlx.h>
+//# include "../mlx/mlx.h"
 # include <stdio.h>
 # include <stdlib.h>
 # include <unistd.h>
 # include "../libft/libft.h"
 
+# define BPP	32
 # define DOWN	13
 # define LEFT	0
 # define RIGHT	2
@@ -38,6 +39,8 @@
 # define INFINITE 1e30
 
 # define FOV	0.66
+
+#define MOVE_SPEED 0.05
 
 # define TEXT_DIM		64
 
@@ -58,8 +61,6 @@ typedef struct s_mlx
 	int		bits_per_pixel;
 	int		line_length;
 	int		endian;
-
-	
 	int		draw_start;
 	int		draw_end;
 	int		line_height;
@@ -111,6 +112,10 @@ typedef struct s_ray
 	double		time;
 	double		old_time;
 	double		perpwalldist;
+	double 		wallx;
+	int			draw_start;
+	int			draw_end;
+	int			line_height;
 	t_coord		map;
 	t_double	plane;
 	t_double	sidedist;
@@ -120,20 +125,19 @@ typedef struct s_ray
 
 typedef struct s_textures
 {
-	void		*img;
+	char	*address;
 	int		height;
 	int		width;
-	char		*address;
+	void	*img;
 
-}				t_textures;
+}	t_textures;
 
 typedef struct s_color
 {
-	int transparency;
+	int	transparency;
 	int	red;
 	int	green;
 	int	blue;
-	
 }	t_color;
 
 typedef struct s_cub
@@ -147,13 +151,16 @@ typedef struct s_cub
 	t_color			floor_color;
 	t_mlx			*graphics;
 	t_ray			*ray;
-	
-}				t_cub;
+}	t_cub;
 
-/* check_walls */
+/* check_walls.c */
 int			check_walls(t_map *map);
 char		**get_rectangular_map(t_map *map);
 void		remove_tmp_map(char **tmp);
+
+/* cub3D.c */
+int			get_pixel_color(t_cub *cub, t_textures *tex, int x, int y);
+void		put_pixel(t_cub *cub, int x, int y, int color);
 
 /* map_errors */
 void		map_errors(int i, char *parameter);
@@ -170,6 +177,7 @@ char		**read_map(char *map_name);
 /* ray.c */
 void		get_image(t_mlx *mlx, char symbol);
 void		init_ray(t_ray *ray, t_player *player);
+void		cast_rays(t_cub *cub);
 t_player	*locate_player(t_map *all_map);
 
 #endif

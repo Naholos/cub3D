@@ -34,7 +34,8 @@ all :       $(NAME)
 
 $(NAME):    $(OBJS)
 			make -C libft
-			$(CC) $(CFLAGS) $(LDLFLAG) $(OBJS) -IINC_DIR -lmlx -L mlx/ -framework OpenGL -framework AppKit -o $(NAME)
+			$(CC) $(CFLAGS) $(LDLFLAG) $(OBJS) -IINC_DIR -lmlx -framework OpenGL -framework AppKit -o $(NAME)
+#			$(CC) $(CFLAGS) $(LDLFLAG) $(OBJS) -IINC_DIR -lmlx -L mlx/ -framework OpenGL -framework AppKit -o $(NAME)
 
 clean :
 		    @rm -fv $(OBJS)

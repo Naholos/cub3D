@@ -95,89 +95,91 @@ t_map	*create_map(void)
 }
 
  //pulsar sobre la "x" y cerrar juego.
-int exit_game(t_mlx *graphics)
+int	exit_game(t_mlx *graphics)
 {
 	mlx_clear_window(graphics->mlx, graphics->win);
 	mlx_destroy_window(graphics->mlx, graphics->win);
 	exit(0);
 }
 //cargar en memoria las texturas
-void create_textures(t_cub *cub)
+void	create_textures(t_cub *cub)
 {
 	cub->n_img.img = mlx_xpm_file_to_image(cub->graphics->mlx, cub->map->no, &cub->n_img.width, &cub->n_img.height);
 	cub->s_img.img = mlx_xpm_file_to_image(cub->graphics->mlx, cub->map->so, &cub->s_img.width, &cub->s_img.height);
 	cub->e_img.img = mlx_xpm_file_to_image(cub->graphics->mlx, cub->map->ea, &cub->e_img.width, &cub->e_img.height);
 	cub->w_img.img = mlx_xpm_file_to_image(cub->graphics->mlx, cub->map->we, &cub->w_img.width, &cub->w_img.height);
-	if(!cub->n_img.img || !cub->s_img.img || !cub->e_img.img || !cub->w_img.img)
+	cub->n_img.address = NORTH;
+	cub->s_img.address = SOUTH;
+	cub->e_img.address = EAST;
+	cub->w_img.address = WEST;
+	if (!cub->n_img.img || !cub->s_img.img || !cub->e_img.img || !cub->w_img.img)
 		map_errors(7, NULL);
-	
 }
 
-int get_matrix_size(char **matrix)
+int	get_matrix_size(char **matrix)
 {
-    int i;
+	int	i;
 
 	i = 0;
-    while (matrix[i] != NULL) 
-        i++;
-    return (i);
+	while (matrix[i] != NULL)
+		i++;
+	return (i);
 }
 
-int check_str_is_num(char *str)
+int	check_str_is_num(char *str)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	while (str[i] != '\0')
 	{
-		if(str[i] < 48 || str[i] > 57)
+		if (str[i] < 48 || str[i] > 57)
 			return (0);
 		i++;
 	}
-	return(1);
+	return (EXIT_FAILURE);
 }
 
-void ft_free_matrix(char **matrix)
+void	ft_free_matrix(char **matrix)
 {
-	int i;
+	int	i;
 
 	i = 0;
-    while (matrix[i] != NULL) 
-    {
+	while (matrix[i] != NULL)
+	{
 		free(matrix[i]);
 		i++;
-	}   
-    free(matrix);
+	}
+	free(matrix);
 }
 
 //comprueba los valores de entrada de los parametros F y C
-t_color check_color_value(char  *color_value) 
+t_color	check_color_value(char	*color_value)
 {
-	t_color color;
-	char **aux;
-	char *rgb_values;
-	int i; 
+	t_color	color;
+	char	**aux;
+	char	*rgb_values;
+	int		i;
 
 	i = 0;
 	while (color_value[i] && (color_value[i] == ' ' ||  color_value[i] == 'F' || color_value[i] == 'C' ))
 		i++;
 	rgb_values = color_value + i;
-	
-	if(ft_strlen(rgb_values) == 0)
+	if (ft_strlen(rgb_values) == 0)
 		map_errors(8, NULL);
 	aux = ft_split(rgb_values, ',');
-	if(get_matrix_size(aux) != 3)
+	if (get_matrix_size(aux) != 3)
 		map_errors(9, NULL);
-	if(!check_str_is_num(aux[0]) || !check_str_is_num(aux[1]) || !check_str_is_num(aux[2]))
+	if (!check_str_is_num(aux[0]) || !check_str_is_num(aux[1]) || !check_str_is_num(aux[2]))
 		map_errors(10, NULL);
 	color.transparency = 0;
 	color.red = ft_atoi(aux[0]);
 	color.green = ft_atoi(aux[1]);
 	color.blue = ft_atoi(aux[2]);
-	if(color.red > 255 || color.green > 255 || color.blue > 255 || color.red < 0 || color.green < 0 || color.blue < 0)
+	if (color.red > 255 || color.green > 255 || color.blue > 255 || color.red < 0 || color.green < 0 || color.blue < 0)
 		map_errors(11, NULL);
 	ft_free_matrix(aux);
-	return(color);
+	return (color);
 }
 
 int	create_trgb(int t, int r, int g, int b) // pasar de R,G,B a decimal -> https://harm-smits.github.io/42docs/libs/minilibx/colors.html
@@ -185,17 +187,31 @@ int	create_trgb(int t, int r, int g, int b) // pasar de R,G,B a decimal -> https
 	return (t << 24 | r << 16 | g << 8 | b);
 }
 
-void put_pixel(t_cub *cub, int x, int y, int color) // https://harm-smits.github.io/42docs/libs/minilibx/getting_started.html mas detalles al fianl de la pagina
+int	get_pixel_color(t_cub *cub, t_textures *tex, int x, int y)
 {
-	char *dst;
+	char	*pixel;
+	int		color;
+
+	// Calcula la dirección del píxel en la memoria
+	pixel = tex->address + (y * cub->graphics->line_length + x * (BPP / 8));
+
+	// Obtiene el color del píxel
+	color = *(int *)pixel;
+	return (color);
+}
+
+void	put_pixel(t_cub *cub, int x, int y, int color) // https://harm-smits.github.io/42docs/libs/minilibx/getting_started.html mas detalles al fianl de la pagina
+{
+	char	*dst;
+
 	dst = cub->graphics->addr + (y * cub->graphics->line_length + x * (cub->graphics->bits_per_pixel / 8));
 	*(unsigned int*) dst = color;
 }
 
-void draw_sky_floor(t_cub *cub)
+void	draw_sky_floor(t_cub *cub)
 {
-	int y;
-	int x;
+	int	y;
+	int	x;
 
 	y = 0;
 	while (y < WIN_HEIGHT)
@@ -215,7 +231,7 @@ void draw_sky_floor(t_cub *cub)
 		}
 		y++;
 	}
-} 
+}
 
 // Función principal
 int	main(int argc, char **argv)
@@ -228,12 +244,12 @@ int	main(int argc, char **argv)
 	check_input(argc, argv);
 	map_data = read_map(argv[1]);
 	cub = ft_calloc(1, sizeof(t_cub));
-	if(!cub)
-		return(1);
+	if (!cub)
+		return (EXIT_FAILURE);
 	cub->map = check_map_data(create_map(), map_data);
 	cub->sky_color = check_color_value(cub->map->c);
 	cub->floor_color = check_color_value(cub->map->f);
-	
+
 	//verifico todos los datos(no quitar hasta el final, es muy util para depurar)
 	printdoublepointer(cub->map->map);
 	printdoublepointer(cub->map->all_map);
@@ -248,9 +264,7 @@ int	main(int argc, char **argv)
 	printf("\n x %f", cub->map->player.x);
 	printf("\n y %f", cub->map->player.y);
 	printf("\n SKY_RGB %i %i %i", cub->sky_color.red, cub->sky_color.green, cub->sky_color.blue);
-	printf("\n FLOOR_RGB %i %i %i", cub->floor_color.red, cub->floor_color.green, cub->floor_color.blue);
-
-
+	printf("\n FLOOR_RGB %i %i %i\n", cub->floor_color.red, cub->floor_color.green, cub->floor_color.blue);
 	cub->graphics = malloc(sizeof(t_mlx));
 	if (!cub->graphics)
 		map_errors(0, "");
@@ -262,20 +276,18 @@ int	main(int argc, char **argv)
 	init_ray(cub->ray, locate_player(cub->map));
 	//crear nueva imagen en la memoria con mlx_new_image
 	cub->graphics->img = mlx_new_image(cub->graphics->mlx, WIN_WIDTH, WIN_HEIGHT);
-	//mlx_get_data_addr permite modificar la imagen creada con mlx_new_image para editar pixel o texturas etc 
+	//mlx_get_data_addr permite modificar la imagen creada con mlx_new_image para editar pixel o texturas etc
 	cub->graphics->addr = mlx_get_data_addr(cub->graphics->img, &cub->graphics->bits_per_pixel, &cub->graphics->line_length, &cub->graphics->endian);
-
 	create_textures(cub); //carga en memoria las texturas y da error si no hay una textura o no se puede abrir
 	draw_sky_floor(cub);
-	
 	//AQUI iria toodo el tema de rayos y renderizar el juego
-	
+	cast_rays(cub);
 	//dibujar o mostrar en pantalla todo lo que pongamos
 	mlx_put_image_to_window(cub->graphics->mlx, cub->graphics->win, cub->graphics->img, 0, 0);
 	mlx_hook(cub->graphics->win, 17, 0, exit_game, cub->graphics); //pulsar sobre la "x" y cerrar juego. (mejorar el exit)
-	mlx_loop(cub->graphics->mlx); 
-	
-	
+	mlx_loop(cub->graphics->mlx);
+
+
 	// Bucle principal del juego
 	/* while (1)
 	{
