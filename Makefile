@@ -6,13 +6,13 @@
 #    By: esamad-j <esamad-j@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/12/15 08:41:10 by aoteo-be          #+#    #+#              #
-#    Updated: 2023/11/30 03:02:31 by esamad-j         ###   ########.fr        #
+#    Updated: 2023/12/05 18:56:33 by esamad-j         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 # Compiler and compilation flags
 CC          = gcc
-CFLAGS	    = -g -Wall -Wextra -Werror
+CFLAGS	    = #-g -Wall -Wextra -Werror
 
 # Directories
 INC_DIR		= ./includes
@@ -34,8 +34,8 @@ all :       $(NAME)
 
 $(NAME):    $(OBJS)
 			make -C libft
-			$(CC) $(CFLAGS) $(LDLFLAG) $(OBJS) -IINC_DIR -lmlx -framework OpenGL -framework AppKit -o $(NAME)
-#			$(CC) $(CFLAGS) $(LDLFLAG) $(OBJS) -IINC_DIR -lmlx -L mlx/ -framework OpenGL -framework AppKit -o $(NAME)
+#			$(CC) $(CFLAGS) $(LDLFLAG) $(OBJS) -IINC_DIR -lmlx -framework OpenGL -framework AppKit -o $(NAME)
+			$(CC) $(CFLAGS) $(LDLFLAG) $(OBJS) -IINC_DIR -lmlx -L mlx/ -framework OpenGL -framework AppKit -o $(NAME)
 
 clean :
 		    @rm -fv $(OBJS)

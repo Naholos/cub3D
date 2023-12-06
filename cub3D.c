@@ -6,7 +6,7 @@
 /*   By: esamad-j <esamad-j@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/13 23:56:12 by esamad-j          #+#    #+#             */
-/*   Updated: 2023/12/01 04:24:46 by esamad-j         ###   ########.fr       */
+/*   Updated: 2023/12/06 03:39:18 by esamad-j         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -233,6 +233,30 @@ void	draw_sky_floor(t_cub *cub)
 	}
 }
 
+void get_player_direction(t_cub *cub)
+{
+	if(cub->map->map[(int)cub->map->player.y][(int)cub->map->player.x] == 'W')
+	{
+		cub->map->player.dirx = 0;
+		cub->map->player.diry = -1;
+	}
+	if(cub->map->map[(int)cub->map->player.y][(int)cub->map->player.x] == 'S')
+	{
+		cub->map->player.dirx = 1;
+		cub->map->player.diry = 0;
+	}
+	if(cub->map->map[(int)cub->map->player.y][(int)cub->map->player.x] == 'N')
+	{
+		cub->map->player.dirx = -1;
+		cub->map->player.diry = 0;
+	}
+	if(cub->map->map[(int)cub->map->player.y][(int)cub->map->player.x] == 'E')
+	{
+		cub->map->player.dirx = 1;
+		cub->map->player.diry = 0;
+	}
+}
+
 // Función principal
 int	main(int argc, char **argv)
 {
@@ -273,7 +297,11 @@ int	main(int argc, char **argv)
 	cub->ray = malloc(sizeof(t_ray));
 	if (cub->ray == NULL)
 		map_errors(0, "");
-	init_ray(cub->ray, locate_player(cub->map));
+
+	get_player_direction(cub);
+	
+	init_ray(cub->ray, cub);
+	
 	//crear nueva imagen en la memoria con mlx_new_image
 	cub->graphics->img = mlx_new_image(cub->graphics->mlx, WIN_WIDTH, WIN_HEIGHT);
 	//mlx_get_data_addr permite modificar la imagen creada con mlx_new_image para editar pixel o texturas etc

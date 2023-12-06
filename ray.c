@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ray.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aoteo-be <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: esamad-j <esamad-j@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/23 11:59:52 by aoteo-be          #+#    #+#             */
-/*   Updated: 2022/01/20 11:54:52 by aoteo-be         ###   ########.fr       */
+/*   Updated: 2023/12/06 03:38:36 by esamad-j         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,15 +79,15 @@ t_player	*locate_player(t_map *m)
 }
 
 // Función que inicializa el rayo
-void	init_ray(t_ray *ray, t_player *player)
+void	init_ray(t_ray *ray, t_cub *cub)
 {
 	ray->time = 0;
 	ray->pos.hit = 0;
 	ray->old_time = 0;
-	ray->pos.x = player->x;
-	ray->pos.y = player->y;
-	ray->pos.dirx = player->dirx;
-	ray->pos.diry = player->diry;
+	ray->pos.x = cub->map->player.x;
+	ray->pos.y = cub->map->player.y;
+	ray->pos.dirx = cub->map->player.dirx;
+	ray->pos.diry = cub->map->player.diry;
 	ray->plane.x = 0;
 	ray->plane.y = FOV;
 }
@@ -125,7 +125,9 @@ void	cast_rays(t_cub *cub)
 		// Cálculos relacionados con la dirección y posición del rayo
 		cub->ray->camerax = 2 * x / (double)w - 1;
 		cub->ray->pos.dirx = cub->map->player.dirx + cub->ray->plane.x * cub->ray->camerax;
+		printf("cub->map->player.dirx + cub->ray->plane.x * cub->ray->camerax %f, %f, %f\n", cub->map->player.dirx, cub->ray->plane.x, cub->ray->camerax);
 		cub->ray->pos.diry = cub->map->player.diry + cub->ray->plane.y * cub->ray->camerax;
+
 		// Inicializa variables de posición del mapa
 		//mapX = (int)cub->map->player.x;
 		//mapY = (int)cub->map->player.y;
@@ -135,14 +137,17 @@ void	cast_rays(t_cub *cub)
 		cub->ray->sidedist.x = 0;
 		cub->ray->sidedist.y = 0;
 		// Inicializa variables de longitud del rayo desde un lado a otro
-		if (cub->ray->pos.dirx == 0)
+		/* if (cub->ray->pos.dirx == 0)
 			cub->ray->deltadist.x = INFINITE;
-		else
+		else */
 			cub->ray->deltadist.x = fabs(1 / cub->ray->pos.dirx);
-		if (cub->ray->pos.diry == 0)
+		/* if (cub->ray->pos.diry == 0)
 			cub->ray->deltadist.y = INFINITE;
-		else
+		else */
 			cub->ray->deltadist.y = fabs(1 / cub->ray->pos.diry);
+		printf("pos.dir %f, %f\n", cub->ray->pos.dirx, cub->ray->pos.diry);
+		printf("deltadist %f, %f\n", cub->ray->deltadist.x, cub->ray->deltadist.y);
+		
 		// Inicializa variables de distancia de la pared perpendicular
 		cub->ray->perpwalldist = 0;
 		// Inicializa variables de dirección para el paso en el mapa

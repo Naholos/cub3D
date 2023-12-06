@@ -6,7 +6,7 @@
 /*   By: esamad-j <esamad-j@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/14 00:04:56 by esamad-j          #+#    #+#             */
-/*   Updated: 2023/12/01 03:07:11 by esamad-j         ###   ########.fr       */
+/*   Updated: 2023/12/06 02:47:45 by esamad-j         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,8 +15,8 @@
 
 # include <fcntl.h>
 # include <math.h>
-# include <mlx.h>
-//# include "../mlx/mlx.h"
+//# include <mlx.h>
+# include "../mlx/mlx.h"
 # include <stdio.h>
 # include <stdlib.h>
 # include <unistd.h>
@@ -176,7 +176,7 @@ char		**read_map(char *map_name);
 
 /* ray.c */
 void		get_image(t_mlx *mlx, char symbol);
-void		init_ray(t_ray *ray, t_player *player);
+void	init_ray(t_ray *ray, t_cub *cub);
 void		cast_rays(t_cub *cub);
 t_player	*locate_player(t_map *all_map);
 
