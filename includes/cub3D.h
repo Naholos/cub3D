@@ -15,8 +15,8 @@
 
 # include <fcntl.h>
 # include <math.h>
-//# include <mlx.h>
-# include "../mlx/mlx.h"
+# include <mlx.h>
+//# include "../mlx/mlx.h"
 # include <stdio.h>
 # include <stdlib.h>
 # include <unistd.h>
@@ -30,11 +30,6 @@
 # define UP		1
 
 # define ERROR	"\33[31mError\n"
-
-# define EAST	"./textures/ea_1.xpm"
-# define NORTH	"./textures/no_1.xpm"
-# define SOUTH	"./textures/so_1.xpm"
-# define WEST	"./textures/we_1.xpm"
 
 # define INFINITE 1e30
 

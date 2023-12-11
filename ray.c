@@ -12,21 +12,6 @@
 
 #include "./includes/cub3D.h"
 
-// Función para obtener la imagen de las texturas
-void	get_image(t_mlx *mlx, char symbol)
-{
-	int	dim;
-
-	dim = TEXT_DIM;
-	if (symbol == 'N')
-		mlx->img = mlx_xpm_file_to_image(mlx->mlx, NORTH, &dim, &dim);
-	if (symbol == 'S')
-		mlx->img = mlx_xpm_file_to_image(mlx->mlx, SOUTH, &dim, &dim);
-	if (symbol == 'E')
-		mlx->img = mlx_xpm_file_to_image(mlx->mlx, EAST, &dim, &dim);
-	if (symbol == 'W')
-		mlx->img = mlx_xpm_file_to_image(mlx->mlx, WEST, &dim, &dim);
-}
 
 // Función para determinar la dirección a la que mira el jugador según el valor
 // de la variable que marca suposición inicial
@@ -106,15 +91,15 @@ void	cast_rays(t_cub *cub)
 	int		texNum;
 	int		texX;
 	int		texY;
-	double	frametime;
-	double	movespeed;
-	double	rotspeed;
+//	double	frametime;
+//	double	movespeed;
+//	double	rotspeed;
 	double	step;
 	double	texPos;
-	double	olddirx;
-	double	oldplanex;
-	double	oldtime;
-	double	time;
+//	double	olddirx;
+//	double	oldplanex;
+//	double	oldtime;
+//	double	time;
 	float	distance;
 	static int 	x_ = 0;
 	
@@ -203,7 +188,7 @@ void	cast_rays(t_cub *cub)
 		t_textures	*current_tex;
 		if (side == 0)
 		{
-			
+
 			
 			if (cub->ray->pos.dirx > 0)
 				current_tex = &cub->e_img;
@@ -271,7 +256,7 @@ void	cast_rays(t_cub *cub)
 			}
 			else
 			{
-					if(cub->ray->pos.diry < 0)
+				if(cub->ray->pos.diry < 0)
 					color = cub->w_img.text_value[(int)64 *  texY + texX];
 				else
 					color = cub->e_img.text_value[(int) 64 * texY + texX];

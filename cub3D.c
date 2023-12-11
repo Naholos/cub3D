@@ -121,11 +121,6 @@ void	create_textures(t_cub *cub)
 	
 	get_texture_data_addr(cub);
 	
-	cub->n_img.address = NORTH;
-	cub->s_img.address = SOUTH;
-	cub->e_img.address = EAST;
-	cub->w_img.address = WEST;
-	
 	if (!cub->n_img.img || !cub->s_img.img || !cub->e_img.img || !cub->w_img.img)
 		map_errors(7, NULL);
 }
@@ -274,7 +269,7 @@ void get_player_direction(t_cub *cub)
 // Función principal
 int	main(int argc, char **argv)
 {
-	t_cub *cub;  //Donde ira todo, tanto informacion del mapa y jugador
+	t_cub	*cub;  //Donde ira todo, tanto informacion del mapa y jugador
 	char	**map_data;
 
 
