@@ -6,7 +6,7 @@
 /*   By: esamad-j <esamad-j@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/14 00:04:56 by esamad-j          #+#    #+#             */
-/*   Updated: 2023/12/06 02:47:45 by esamad-j         ###   ########.fr       */
+/*   Updated: 2023/12/11 12:36:39 by esamad-j         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,6 +113,7 @@ typedef struct s_ray
 	double		old_time;
 	double		perpwalldist;
 	double 		wallx;
+	
 	int			draw_start;
 	int			draw_end;
 	int			line_height;
@@ -129,6 +130,10 @@ typedef struct s_textures
 	int		height;
 	int		width;
 	void	*img;
+	int		*text_value;
+	int bpp;
+	int line_len;
+	int endian;
 
 }	t_textures;
 

@@ -6,7 +6,7 @@
 /*   By: esamad-j <esamad-j@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/23 11:59:52 by aoteo-be          #+#    #+#             */
-/*   Updated: 2023/12/06 03:38:36 by esamad-j         ###   ########.fr       */
+/*   Updated: 2023/12/11 12:48:53 by esamad-j         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,7 +115,9 @@ void	cast_rays(t_cub *cub)
 	double	oldplanex;
 	double	oldtime;
 	double	time;
-
+	float	distance;
+	static int 	x_ = 0;
+	
 	w = WIN_WIDTH;
 	h = WIN_HEIGHT;
 	// Itera sobre los píxeles de la ventana
@@ -196,17 +198,21 @@ void	cast_rays(t_cub *cub)
 			if (cub->map->map[mapY][mapX] == '1')
 				cub->ray->pos.hit = 1;
 		}
+		
 		// Aquí es donde seleccionas la textura
 		t_textures	*current_tex;
 		if (side == 0)
 		{
+			
+			
 			if (cub->ray->pos.dirx > 0)
 				current_tex = &cub->e_img;
 			else
-				current_tex = &cub->w_img;
+				current_tex = &cub->w_img; 
 		}
 		else
 		{
+			
 			if (cub->ray->pos.diry > 0)
 				current_tex = &cub->n_img;
 			else
@@ -214,13 +220,19 @@ void	cast_rays(t_cub *cub)
 		}
 		// Calcula distancia del rayo perpendicular
 		if (side == 0)
-			cub->ray->perpwalldist = (mapX - cub->map->player.x + (1.0 - cub->ray->pos.step.x) / 2.0) / cub->ray->pos.dirx;
+			distance = cub->ray->sidedist.x - cub->ray->deltadist.x;
+			//cub->ray->perpwalldist = (mapX - cub->map->player.x + (1.0 - cub->ray->pos.step.x) / 2.0) / cub->ray->pos.dirx;
 		else
-			cub->ray->perpwalldist = (mapY - cub->map->player.y + (1.0 - cub->ray->pos.step.y) / 2.0) / cub->ray->pos.diry;
+			distance = cub->ray->sidedist.y - cub->ray->deltadist.y;
+			//cub->ray->perpwalldist = (mapY - cub->map->player.y + (1.0 - cub->ray->pos.step.y) / 2.0) / cub->ray->pos.diry;
+		
+		
 		// Calcula la altura de la línea a dibujar en la pantalla
-		cub->ray->line_height = (int)(h / cub->ray->perpwalldist);
+		cub->ray->line_height = (int)(h / distance);
 		// Calcula los píxeles a dibujar en la línea actual
 		cub->ray->draw_start = -cub->ray->line_height / 2 + h / 2;
+		if(x_ == w)
+			x_ = 0;
 		if (cub->ray->draw_start < 0)
 			cub->ray->draw_start = 0;
 		cub->ray->draw_end = cub->ray->line_height / 2 + h / 2;
@@ -230,12 +242,12 @@ void	cast_rays(t_cub *cub)
 		texNum = cub->map->map[mapY][mapX] - 1;
 		// Calcula la posición exacta de la pared
 		if (side == 0)
-			cub->ray->wallx = cub->map->player.y + cub->ray->perpwalldist * cub->ray->pos.diry;
+			cub->ray->wallx = cub->map->player.y + distance * cub->ray->pos.diry;
 		else
-			cub->ray->wallx = cub->map->player.x + cub->ray->perpwalldist * cub->ray->pos.dirx;
+			cub->ray->wallx = cub->map->player.x + distance * cub->ray->pos.dirx;
 		cub->ray->wallx -= floor(cub->ray->wallx);
 		// Calcula la coordenada x en la textura
-		texX = (int)(cub->ray->wallx * (double)current_tex->width);
+		texX = (int)(cub->ray->wallx * (double)current_tex->width); //?
 		if (side == 0 && cub->ray->pos.dirx > 0)
 			texX = current_tex->width - texX - 1;
 		if (side == 1 && cub->ray->pos.diry < 0)
@@ -248,11 +260,27 @@ void	cast_rays(t_cub *cub)
 		y = cub->ray->draw_start - 1;
 		while (++y < cub->ray->draw_end)
 		{
-			texY = (int)texPos & (current_tex->height - 1);
+			texY = (int)texPos /* & (current_tex->height - 1) */;
 			texPos += step;
-			color = get_pixel_color(cub, current_tex, texX, texY);
-			if (side == 1)
+			if(side == 0)
+			{
+				if(cub->ray->pos.dirx < 0)
+					color = cub->n_img.text_value[(int)64 *  texY + texX];
+				else
+					color = cub->s_img.text_value[(int)64 *  texY + texX];
+			}
+			else
+			{
+					if(cub->ray->pos.diry < 0)
+					color = cub->w_img.text_value[(int)64 *  texY + texX];
+				else
+					color = cub->e_img.text_value[(int) 64 * texY + texX];
+			}
+			
+			//color = get_pixel_color(cub, current_tex, texX, texY);
+			/* if (side == 1)
 				color = (color >> 1) & 8355711;
+				color = 1; */
 			put_pixel(cub, x, y, color);
 		}
 	}

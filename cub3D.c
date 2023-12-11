@@ -6,7 +6,7 @@
 /*   By: esamad-j <esamad-j@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/13 23:56:12 by esamad-j          #+#    #+#             */
-/*   Updated: 2023/12/06 03:39:18 by esamad-j         ###   ########.fr       */
+/*   Updated: 2023/12/11 12:31:48 by esamad-j         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,6 +101,16 @@ int	exit_game(t_mlx *graphics)
 	mlx_destroy_window(graphics->mlx, graphics->win);
 	exit(0);
 }
+
+void get_texture_data_addr(t_cub *cub)
+{
+	cub->n_img.text_value = (int *)mlx_get_data_addr(cub->n_img.img, &cub->n_img.bpp, &cub->n_img.line_len, &cub->n_img.endian);
+	cub->s_img.text_value = (int *)mlx_get_data_addr(cub->s_img.img, &cub->s_img.bpp, &cub->s_img.line_len, &cub->s_img.endian);
+	cub->e_img.text_value = (int *)mlx_get_data_addr(cub->e_img.img, &cub->e_img.bpp, &cub->e_img.line_len, &cub->e_img.endian);
+	cub->w_img.text_value = (int *)mlx_get_data_addr(cub->w_img.img, &cub->w_img.bpp, &cub->w_img.line_len, &cub->w_img.endian);
+	
+}
+
 //cargar en memoria las texturas
 void	create_textures(t_cub *cub)
 {
@@ -108,10 +118,14 @@ void	create_textures(t_cub *cub)
 	cub->s_img.img = mlx_xpm_file_to_image(cub->graphics->mlx, cub->map->so, &cub->s_img.width, &cub->s_img.height);
 	cub->e_img.img = mlx_xpm_file_to_image(cub->graphics->mlx, cub->map->ea, &cub->e_img.width, &cub->e_img.height);
 	cub->w_img.img = mlx_xpm_file_to_image(cub->graphics->mlx, cub->map->we, &cub->w_img.width, &cub->w_img.height);
+	
+	get_texture_data_addr(cub);
+	
 	cub->n_img.address = NORTH;
 	cub->s_img.address = SOUTH;
 	cub->e_img.address = EAST;
 	cub->w_img.address = WEST;
+	
 	if (!cub->n_img.img || !cub->s_img.img || !cub->e_img.img || !cub->w_img.img)
 		map_errors(7, NULL);
 }
